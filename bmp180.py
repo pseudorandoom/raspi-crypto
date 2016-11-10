@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import smbus
 import time
 from ctypes import c_short
