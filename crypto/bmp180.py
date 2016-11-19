@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from Crypto.Cipher import Blowfish
+# from Crypto.Cipher import Blowfish
 import RPi.GPIO as GPIO #importamos la libreria y cambiamos su nombre por "GPIO"
 import time #necesario para los delays
-import timeit
+import rsacrypto
 import smbus
 from ctypes import c_short
  
@@ -117,7 +117,7 @@ def main():
   #configuramos el pin GPIO17 como una salida
   GPIO.setup(26, GPIO.OUT)
 
-  fileData = open("medicionesBlowfish.csv","a")
+  fileData = open("medicionesRSA.csv","a")
    
   #encendemos y apagamos el led 5 veces
   for i in range(0,100):
@@ -152,13 +152,13 @@ def main():
 
       
       # creamos el cifrador con DES
-      cipher = Blowfish.new('1234567891234567')
+    #   cipher = Blowfish.new('1234567891234567')
 
       begin = time.time()
       for i in range(0,5000):
-        cipher.encrypt(temperature)
+        rsacrypto.encrypt(temperature)
 
-      end = time.time();
+      end = time.time()
 
       timeElapsed = end - begin
 
@@ -167,9 +167,9 @@ def main():
 
       begin = time.time()
       for i in range(0,5000):
-        cipher.encrypt(pressure)
+        rsacrypto.encrypt(pressure)
 
-      end = time.time();
+      end = time.time()
 
       timeElapsed = end - begin
 
@@ -177,8 +177,8 @@ def main():
       fileData.write('"' +  str(realTime) + '",')
       
       
-      c_temperature = cipher.encrypt(temperature)
-      c_pressure = cipher.encrypt(pressure)
+      c_temperature = rsacrypto.encrypt(temperature)
+      c_pressure = rsacrypto.encrypt(pressure)
       # enviamos credenciales (a la pantalla en este caso)
       print "El cliente envia:"
       print "Temperatura: " + c_temperature
@@ -194,7 +194,7 @@ def main():
       for i in range(0,5000):
         cipher.decrypt(c_temperature).strip()
 
-      end = time.time();
+      end = time.time()
 
       timeElapsed = end - begin
 
@@ -203,9 +203,9 @@ def main():
 
       begin = time.time()
       for i in range(0,5000):
-        cipher.decrypt(c_pressure).strip()
+        rsacrypto.decrypt(c_pressure).strip()
 
-      end = time.time();
+      end = time.time()
 
       timeElapsed = end - begin
 
@@ -214,8 +214,8 @@ def main():
 
       fileData.write('\n')
       
-      d_temperature = cipher.decrypt(c_temperature).strip()
-      d_pressure = cipher.decrypt(c_pressure).strip()
+      d_temperature = rsacrypto.decrypt(c_temperature).strip()
+      d_pressure = rsacrypto.decrypt(c_pressure).strip()
       print "El servidor descifra:"
       print "Temperatura: " + d_temperature
       print "Presión: " + d_pressure
@@ -223,7 +223,7 @@ def main():
    
   GPIO.cleanup()  #devuelve los pines a su estado inicial
   
-  fileData.close();
+  fileData.close()
   
 if __name__=="__main__":
    main()
