@@ -188,11 +188,11 @@ def main():
       # a partir de aqui simulamos el servidor donde llegan los mensajes
       # cifrados.
       # desciframos mensajes y quitamos espacios con strip()
-      cipher = Blowfish.new('1234567891234567')
+    #   cipher = Blowfish.new('1234567891234567')
 
       begin = time.time()
       for i in range(0,5000):
-        cipher.decrypt(c_temperature).strip()
+        rsacrypto.decrypt(c_temperature).strip()
 
       end = time.time()
 
